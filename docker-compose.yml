@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  oracle-nominas:
+    image: jantoniogc/oracle-free:v1 #gvenzl/oracle-free:latest
+    container_name: oracle-nominas
+    environment:
+      - ORACLE_PASSWORD=1234
+      - ORACLE_CHARACTERSET=AL32UTF8
+      - APP_USER=GDAM
+      - APP_USER_PASSWORD=1234
+    ports:
+      - "1521:1521"
+      - "5500:5500"
+    # Customize healthcheck script options for startup
+    healthcheck:
+      test: ["CMD", "healthcheck.sh"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+      start_interval: 5s
+    
+    volumes:
+      - ./oracle_data:/opt/oracle/oradata  # Mapea la ruta local actual al contenedor
+    
+    networks:
+      - oracle_network
+
+networks:
+  oracle_network:
+    driver: bridge
